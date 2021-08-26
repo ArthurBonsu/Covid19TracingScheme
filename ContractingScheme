@@ -1,133 +1,357 @@
+  
 pragma solidity >=0.7.0 <0.9.0;
 
 /** 
  * @title UserClassificationContracts
  * @dev Implements a energy class process for energy generation
  */
-contract UserClassificationContracts {
+contract ContactTracing {
+    
+    
+    
+    bytes32 public override  DOMAIN_SEPARATOR;
+    // keccak256("Permit(address owner,address spender,uint256 value,uint256 nonce,uint256 deadline)");
+    bytes32 public constant override PERMIT_TYPEHASH = 0x6e71edae12b1b97f4d1f60370fef10105fa2faae0126114a169c64845d6126c9;
+    mapping(address => uint) public override nonces;
    
-     struct EnergyUser {
+     struct Contact {
+         string name; // name of the infected people
+        uint contactid ; // index of user number count
+         address  location; // user id of user
+        bool residence ;  // currently a non-renewable user
+        address phonenumber;
+        uint timeofcontact; // person address
+           
+    }
+   
+   
+   
+ 
+   struct Infected {
          string name; // name of the user
-        uint usernumbercount ; // index of user number count
-         address  userid; // user id of user
-        bool status ;  // currently a non-renewable user
-        address useraddress; // person address
+        address infectedid ; // index of user number count
+         bytes32  location; // user id of user
+        bytes32 residence ;  // currently a non-renewable user
+        string phonenumber;// person address
+        uint timeofcontact;
            
     }
    
-    struct NonRenewableEnergyUser {
-         string  name; // name of the user
-        uint usernumbercount ; // index of user number count
-         address  userid; // user id of user
-        bool status ;  // currently a non-renewable user
-        address useraddress; // person address
-           
-    }
-
-    struct RenewableEnergyUser {
-         string  name; // name of the user
-        uint usernumbercount ; // index of user number count
-         address  userid; // user id of user
-        bool status ;  // currently a non-renewable user
-        address useraddress; // person address
-           
-    }
-    address public newuseraddress;
-    string  public newusername;
-    bool public devicetypes; 
+   struct LatLng{
+       address mover;
+       uint lat;
+       uint lng;
+       uint locationcount;
+   }
+   
+      struct GeneralPopulation {
+         string name; // name of the infected people
+        address populantid ; // index of user number count
+         address  populantlocation; // user id of user
+        bytes32 populantresidence ;  // currently a non-renewable user
+        address populantphonenumber;
       
-    mapping(address => EnergyUser) public energyusers;
-    mapping(address => NonRenewableEnergyUser) public renewalenergyusers;
-    mapping(address => RenewableEnergyUser) public nonrenewalenergyusers;
+           
+           //We check if they are the name of the checkee are the same
+    }
+   
+    address public  registrar = '0x06Da25591CdF58758C4b3aBbFf18B092e4380B65'; 
+    address public user;
+    uint  public casecount;
+    uint  public timefrominfectdeclaration;
+    uint  public timefromcontractdeclaration;
+//    string[] public usernameslist;
+   
+    mapping(address => uint[1000]) public contactlist;
+    mapping(address => uint[1000]) public infectedlist;
+     mapping(address => uint[1000]) public populationlist;
+    
+    
 
-    EnergyUser[] public enusers;
-    RenewableEnergyUser[] public rnusers;
-    NonRenewableEnergyUser[] public nrusers;
-    string[] public usernameslist;
+    
+    Contact[] public contactliststore;
+    Infected[] public infectedlistore;
+    LatLng[] public latlngstore;
+    PopulationStore[] public contactliststore;
+   
+    bool metornot();
+    
     /** 
      * @dev Create a new user, get their information  and list them in newusername'.
      * @param _newusername and _devicetype
      */
-    constructor(string memory _newusername, bool _devicetype)   {
-           
-      
-          for (uint i = 0; i < usernameslist.length; i++) {
-          usernameslist.push(_newusername);
-        newuseraddress = msg.sender;
-        newusername =_newusername;
-       
-        devicetypes = _devicetype; 
-        
-       
-            // 'Proposal({...})' creates a temporary
-            // Proposal object and 'proposals.push(...)'
-            // appends it to the end of 'proposals'.
-            enusers.push(EnergyUser({
-                
-               name:_newusername, // name of the user
-               usernumbercount: i, // index of user number count
-               userid: msg.sender,
-               status: _devicetype,  // currently a non-renewable user
-               useraddress: newuseraddress // person address
-           
-                
-            }));
-        }
-    
-        
-        
-    }
-    event setclassifierevent(address useraddress, bool _devicetypes);
-    function setclassifier(bool _devicetype) public {
-     
-                   if(devicetypes == true){
-        for (uint i = 0; i < rnusers.length; i++) {
-             
-            renewalenergyusers[newuseraddress].usernumbercount = i;
-            // 'Proposal({...})' creates a temporary
-            // Proposal object and 'proposals.push(...)'
-            // appends it to the end of 'proposals'.
-           
-           rnusers.push(RenewableEnergyUser({
-                
-               name:newusername, // name of the user
-               usernumbercount: i, // index of user number count
-               userid: msg.sender,
-               status: true,  // currently a non-renewable user
-               useraddress: msg.sender // person address
-           
-                
-            }));
-           
-     emit setclassifierevent(msg.sender, _devicetype);       
-        }
-                       
-                       
-                   }   
-                   
-                  else 
-        
-                   {
-            for (uint i = 0; i < nrusers.length; i++) {
-             
-            nonrenewalenergyusers[newuseraddress].usernumbercount = i;
-            // 'Proposal({...})' creates a temporary
-            // Proposal object and 'proposals.push(...)'
-            // appends it to the end of 'proposals'.
-           
-           nrusers.push(NonRenewableEnergyUser({
-                
-               name:newusername, // name of the user
-               usernumbercount: i, // index of user number count
-               userid: msg.sender,
-               status: true,  // currently a non-renewable user
-               useraddress: msg.sender // person address
-           
-                
-            }));
-           
-             emit setclassifierevent(msg.sender, _devicetype);
+    constructor(string memory infectedpersonname,uint timedetected)   {
+           user = msg.sender;
+        for(i=0; i<contactlist.length; i++){
+         contactlist.push(infectedpersonname);
+         timefrominfectdeclaration = timedetected - block.timestamp;
+         
+          casecount = i;
             
         }
+            }
+    
+    
+    }
+    
+    
+    function registerpopulant(string _name, address _populantid, bytes32 _populantresidence, address _populantphonenumber) external view returns{
+        require ( registrar =='0x06Da25591CdF58758C4b3aBbFf18B092e4380B65' , "You have to be the registrar to register populants");
+        
+      
+      GeneralPopulation storage TheGeneralPopulation = contactlist[_contactname] ;
+     
+   
+     TheContact.name =_contactname; 
+      TheContact.contactid = _contactid;
+      TheContact.location =_location;
+      TheContact.residence =_residence;
+      TheContact.phonenumber =_phonenumber;
+      TheContact.timeofcontact =timefromcontractdeclaration;
+     
+      
+      contactliststore.push(Contact({
+          
+               name:_contactname, // name of the user
+               contactid: contactid, // index of user number count
+               location: _location,
+               residence: _residence,  // currently a non-renewable user
+               phonenumber: _phonenumber // person address
+               timeofcontact: timefromcontractdeclaration // person address
+           
+                
+            }));
+                      
+        
+    }
+    event ddd(address useraddress, bool _devicetypes);
+  
+    function registerinfectant(string _infectantname,address _infectedid, bytes32 _location,bytes32 _residence, string _phonenumber,  uint _timeofinfecteddeclaration) external view {
+         require ( registrar =='0x06Da25591CdF58758C4b3aBbFf18B092e4380B65', "You haveto be the registrar to register infectants!");
+     timefrominfectdeclaration = _timeofinfecteddeclaration = block.timestamp;
+      Infected storage TheInfected = infectedlist[_infectantname];
+       
+       
+       
+      TheInfected.name =_infectantname; 
+      TheInfected.infectedid = _infectedid;
+      TheInfected.location =_location;
+      TheInfected.residence =_residence;
+      TheInfected.phonenumber =_phonenumber;
+      TheInfected.timeofcontact =timefrominfectdeclaration;
+     
+      
+    }
+     
+     
+     
+    function registercontactlist(string _contactname,address _contactid, bytes32 _location,bytes32 _residence, string _phonenumber,  uint _timeofcontractdeclaration) external view {
+      require ( registrar =='0x06Da25591CdF58758C4b3aBbFf18B092e4380B65', "You haveto be the registrar to registrar contactlist!");
+     timefromcontractdeclaration = _timeofcontractdeclaration;
+      Contact storage TheContact = contactlist[_contactname] ;
+     
+   
+     TheContact.name =_contactname; 
+      TheContact.contactid = _contactid;
+      TheContact.location =_location;
+      TheContact.residence =_residence;
+      TheContact.phonenumber =_phonenumber;
+      TheContact.timeofcontact =timefromcontractdeclaration;
+     
+      
+      contactliststore.push(Contact({
+          
+               name:_contactname, // name of the user
+               contactid: contactid, // index of user number count
+               location: _location,
+               residence: _residence,  // currently a non-renewable user
+               phonenumber: _phonenumber // person address
+               timeofcontact: timefromcontractdeclaration // person address
+           
+                
+            }));
+                      
+    }
+    
+     function getlocation(address _mover, uint _lng,uint _lat ) external view  returns(string memory) {
+               uint i =0;
+         LatLng memory  _lnglat = new LatLng ({mover:_mover, lng: _lng, lat:_lat, locationcount:i});
+            latlngstore.push(_lnglat)                 
+                i++;      
+     }  
+     
+     
+     function checkifclose(address _infectedperson, address _contactedperson ) external view returns(bool){
+         
+          bool closeornot;
+            LatLng storage InfecteeLatLng = latlngstore[_infectedperson] ;
+            LatLng storage ContacteeLatLng = latlngstore[_contactedperson] ;
+            
+            uint latitudedifference =0;
+            uint longitudedifference=0;
+            
+            uint latitudedifference = InfecteeLatLng.lat - ContacteeLatLng.lat;
+            uint longitudedifference = InfecteeLatLng.lng - ContacteeLatLng.lng;
+         
+            if (latitudedifference <=0.25 && longitudedifference <=0.25) {
+                closeornot = true;
+                
+            }
+            else{
+                closeornot =false;
+            }
+         return (closeornot);
+     }
+     
+       function tracethepeople(address ){
+           
+          require ( registrar == msg.sender, "You haveto be the registrar to registrar contactlist!");
+           
+           // locatiohistory
+           // contactinfectpair
+           
+           
+       }
+       
+       function feesignings() {}    
+    //list of people contacted 
+    // searchforsomeone in the list
+    //search for infected 
+    // search for contractlist
+    // tracethepeople
+    // Sign and Fees 
+    
+      
+      function contains(Data storage self, uint value)
+public
+view
+returns (bool)
+{
+return self.flags[value];
+
+}
+
+   function claimPayment( address payable yourcurrentowner, uint amount, uint256 nonce, bytes memory signature,address payable receipientaddress, bytes32 hashes)
+public payable {
+         
+        uint mycash=0;
+        mycash= amount;
+        uint getthebalance=0;
+        uint256 mynonce =0;
+        mynonce = nonce;
+      //  address payable entitytoclaimhismoney = receipientaddress;
+        
+    thereceivertopay = yourcurrentowner; 
+
+require(!usedNonces[mynonce]);
+usedNonces[nonce] = true;
+// this recreates the message that was signed on the client
+// bytes32 message = prefixed(keccak256(abi.encodePacked(hashes)));
+    
+require( recoverSigner(hashes, signature, yourcurrentowner)==true  );
+
+
+receipientaddress.transfer(amount);
+getthebalance = receipientaddress.balance-amount;
+//withdraw(amount,thereceivertopaybalance);
+emit Sent(yourcurrentowner, receipientaddress, amount);
+
+}
+
+
+/// destroy the contract and reclaim the leftover funds.
+function kill(address payable entitymustgethismoneyback) public payable {
+require(msg.sender == entitymustgethismoneyback);
+selfdestruct(msg.sender);
+}
+
+
+
+/// signature methods.
+function splitSignature(bytes memory sig)
+public payable
+returns (uint8 v, bytes32 r, bytes32 s)
+{
+      
+
+  
+require(sig.length == 65);
+assembly {
+// first 32 bytes, after the length prefix.
+    
+ 
+   let sig := mload(0x40)
+     
+ //   mstore ( 0x40, sig )
+   
+    
+
+
+ //     r := mload(add(sig, 0x20))
+   //   s := mload(add(sig, 0x40))
+   //   v := byte(0, mload(add(sig, 0x60)))
+    // v := and(mload(add(sig, 65)), 255)
+
+//sv := and(mload(add(sig, 0x60)), 255)
+
+r := mload(add(sig, 32))
+// second 32 bytes.
+s := mload(add(sig, 64))
+// final byte (first byte of the next 32 bytes).
+//v := byte(0, mload(add(sig, 96)))
+v := and(mload(add(sig, 65)), 255)
+}
+
+
+//Version of signature should be 27 or 28, but 0 and 1 are also possible versions
+    if (v < 27) {
+      v += 27;
+    }
+
+   // If the version is correct return the signer address
+    if (v != 27 && v != 28) {
+     
+
+return (v, r, s);
     }
 }
+
+
+function verify(address payable yourcurrentowner, bytes32 hash, uint8 v, bytes32 r, bytes32 s) public pure returns(bool) {
+
+    // bytes memory prefix = "\x19Ethereum Signed Message:\n32";
+   // bytes32 prefixedHash = (keccak256(abi.encodePacked(prefix, hash));
+
+  bytes32 prefixedHash = prefixed(keccak256(abi.encodePacked(hash)));
+    return ecrecover(prefixedHash, v, r, s) == yourcurrentowner;
+}
+
+//ANOTHER IMPLEMENTATION
+
+// HERE IS WHERE RECOVER SIGNER IS PASSED TO HIM SO THAT HE CAN GET HIS MONEY
+function recoverSigner(bytes32 message, bytes memory sig, address payable myman)
+public payable
+
+returns (bool)
+{          
+        
+        
+    //  address  mysigner = signer;
+
+      
+  (uint8 v, bytes32 r, bytes32 s) = splitSignature(sig);
+        
+   myman== ecrecover(message, v, r, s);
+     
+  return true;
+     
+}
+/// builds a prefixed hash to mimic the behavior of eth_sign.
+function prefixed(bytes32 hash) internal pure returns (bytes32) {
+return keccak256(abi.encodePacked("\x19Ethereum Signed Message:\n32", hash));}
+
+    
+    
+      }
+                       
+     
